@@ -35,9 +35,9 @@ $this->params['breadcrumbs'][] = $this->title;
                     return StringHelper::truncate($model->content, 100);
                 }
             ],
-            'attribute' => 'relatedTo',
+            'attribute' => 'related_to',
             [
-                'attribute' => 'createdBy',
+                'attribute' => 'created_by',
                 'value' => function ($model) {
                     return $model->getAuthorName();
                 },
@@ -62,9 +62,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 'filterInputOptions' => ['prompt' => Yii::t('yii2mod.comments', 'Select Status'), 'class' => 'form-control'],
             ],
             [
-                'attribute' => 'createdAt',
+                'attribute' => 'created_at',
                 'value' => function ($model) {
-                    return Yii::$app->formatter->asDatetime($model->createdAt);
+                    return Yii::$app->formatter->asDatetime($model->created_at);
                 },
                 'filter' => false,
             ],

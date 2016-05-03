@@ -14,7 +14,7 @@ class Module extends \yii\base\Module
     /**
      * @var string module name
      */
-    public static $name = 'comment';
+    public static $name = 'comments';
 
     /**
      * @var string|null

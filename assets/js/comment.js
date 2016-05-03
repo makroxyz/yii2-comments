@@ -16,6 +16,8 @@
 
     // Default settings
     var defaults = {
+        // Comment submit button label
+        submitButtonLabel: 'Submit',
         // Comment actions buttons selector
         toolsSelector: '.comment-action-buttons',
         // Form selector
@@ -81,7 +83,7 @@
             //If success is status, then pjax container has been reloaded and comment form has been reset
             if (data.status == 'success') {
                 $.pjax(pjaxSettings).done(function () {
-                    $commentForm.find(':submit').prop('disabled', false).text('Comment');
+                    $commentForm.find(':submit').prop('disabled', false).text(settings.formSelector);
                     $commentForm.trigger("reset");
                     //Restart plugin
                     methods.reset.call($commentForm, settings);
@@ -95,7 +97,7 @@
                 else {
                     $commentForm.yiiActiveForm('updateAttribute', 'commentmodel-content', [data.message]);
                 }
-                $commentForm.find(':submit').prop('disabled', false).text('Comment');
+                $commentForm.find(':submit').prop('disabled', false).text(settings.submitButtonLabel);
             }
         });
         return false;

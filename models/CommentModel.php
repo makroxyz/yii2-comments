@@ -17,16 +17,16 @@ use yii2mod\comments\Module;
  *
  * @property integer $id
  * @property string $entity
- * @property integer $entityId
- * @property integer $parentId
+ * @property integer $entity_id
+ * @property integer $parent_id
  * @property string $content
- * @property integer $createdBy
- * @property integer $updatedBy
- * @property string $relatedTo
+ * @property integer $created_by
+ * @property integer $updated_by
+ * @property string $related_to
  * @property integer $status
  * @property integer $level
- * @property integer $createdAt
- * @property integer $updatedAt
+ * @property integer $created_at
+ * @property integer $updated_at
  *
  */
 class CommentModel extends ActiveRecord
@@ -42,7 +42,7 @@ class CommentModel extends ActiveRecord
      */
     public static function tableName()
     {
-        return '{{%Comment}}';
+        return '{{%comment}}';
     }
 
     /**
@@ -52,21 +52,21 @@ class CommentModel extends ActiveRecord
     public function rules()
     {
         return [
-            [['entity', 'entityId', 'content'], 'required'],
-            [['content', 'entity', 'relatedTo'], 'string'],
-            ['parentId', 'validateParentID'],
-            [['entityId', 'parentId', 'createdBy', 'updatedBy', 'status', 'createdAt', 'updatedAt', 'level'], 'integer'],
+            [['entity', 'entity_id', 'content'], 'required'],
+            [['content', 'entity', 'related_to'], 'string'],
+            ['parent_id', 'validateparent_id'],
+            [['entity_id', 'parent_id', 'created_by', 'updated_by', 'status', 'created_at', 'updated_at', 'level'], 'integer'],
         ];
     }
 
     /**
-     * Validate parentId attribute
+     * Validate parent_id attribute
      * @param $attribute
      */
-    public function validateParentID($attribute)
+    public function validateparent_id($attribute)
     {
         if ($this->{$attribute} !== null) {
-            $comment = self::find()->where(['id' => $this->{$attribute}, 'entity' => $this->entity, 'entityId' => $this->entityId])->active()->exists();
+            $comment = self::find()->where(['id' => $this->{$attribute}, 'entity' => $this->entity, 'entity_id' => $this->entity_id])->active()->exists();
             if ($comment === false) {
                 $this->addError('content', Yii::t('yii2mod.comments', 'Oops, something went wrong. Please try again later.'));
             }
@@ -83,13 +83,9 @@ class CommentModel extends ActiveRecord
         return [
             'blameable' => [
                 'class' => BlameableBehavior::className(),
-                'createdByAttribute' => 'createdBy',
-                'updatedByAttribute' => 'updatedBy',
             ],
             'timestamp' => [
                 'class' => TimestampBehavior::className(),
-                'createdAtAttribute' => 'createdAt',
-                'updatedAtAttribute' => 'updatedAt'
             ],
             'purify' => [
                 'class' => PurifyBehavior::className(),
@@ -110,11 +106,11 @@ class CommentModel extends ActiveRecord
             'entity' => Yii::t('yii2mod.comments', 'Entity'),
             'status' => Yii::t('yii2mod.comments', 'Status'),
             'level' => Yii::t('yii2mod.comments', 'Level'),
-            'createdBy' => Yii::t('yii2mod.comments', 'Created by'),
-            'updatedBy' => Yii::t('yii2mod.comments', 'Updated by'),
-            'relatedTo' => Yii::t('yii2mod.comments', 'Related to'),
-            'createdAt' => Yii::t('yii2mod.comments', 'Created date'),
-            'updatedAt' => Yii::t('yii2mod.comments', 'Updated date'),
+            'created_by' => Yii::t('yii2mod.comments', 'Created by'),
+            'updated_by' => Yii::t('yii2mod.comments', 'Updated by'),
+            'related_to' => Yii::t('yii2mod.comments', 'Related to'),
+            'created_at' => Yii::t('yii2mod.comments', 'Created date'),
+            'updated_at' => Yii::t('yii2mod.comments', 'Updated date'),
         ];
     }
 
@@ -135,8 +131,8 @@ class CommentModel extends ActiveRecord
     public function beforeSave($insert)
     {
         if (parent::beforeSave($insert)) {
-            if ($this->parentId > 0) {
-                $parentNodeLevel = (int)self::find()->select('level')->where(['id' => $this->parentId])->scalar();
+            if ($this->parent_id > 0) {
+                $parentNodeLevel = (int)self::find()->select('level')->where(['id' => $this->parent_id])->scalar();
                 $this->level = $parentNodeLevel + 1;
             }
             return true;
@@ -152,27 +148,27 @@ class CommentModel extends ActiveRecord
     public function getAuthor()
     {
         $module = Yii::$app->getModule(Module::$name);
-        return $this->hasOne($module->userIdentityClass, ['id' => 'createdBy']);
+        return $this->hasOne($module->userIdentityClass, ['id' => 'created_by']);
     }
 
     /**
      * Get comments tree.
      *
      * @param $entity string model class id
-     * @param $entityId integer model id
+     * @param $entity_id integer model id
      * @param null $maxLevel
      * @return array|\yii\db\ActiveRecord[] Comments tree
      */
-    public static function getTree($entity, $entityId, $maxLevel = null)
+    public static function getTree($entity, $entity_id, $maxLevel = null)
     {
         $query = self::find()->where([
-            'entityId' => $entityId,
+            'entity_id' => $entity_id,
             'entity' => $entity,
         ])->with(['author']);
         if ($maxLevel > 0) {
             $query->andWhere(['<=', 'level', $maxLevel]);
         }
-        $models = $query->orderBy(['parentId' => SORT_ASC, 'createdAt' => SORT_ASC])->all();
+        $models = $query->orderBy(['parent_id' => SORT_ASC, 'created_at' => SORT_ASC])->all();
         if (!empty($models)) {
             $models = self::buildTree($models);
         }
@@ -183,14 +179,14 @@ class CommentModel extends ActiveRecord
      * Build comments tree.
      *
      * @param array $data Records array
-     * @param int $rootID parentId Root ID
+     * @param int $rootID parent_id Root ID
      * @return array|ActiveRecord[] Comments tree
      */
     protected static function buildTree(&$data, $rootID = 0)
     {
         $tree = [];
         foreach ($data as $id => $node) {
-            if ($node->parentId == $rootID) {
+            if ($node->parent_id == $rootID) {
                 unset($data[$id]);
                 $node->children = self::buildTree($data, $node->id);
                 $tree[] = $node;
@@ -207,7 +203,7 @@ class CommentModel extends ActiveRecord
     public function deleteComment()
     {
         $this->status = CommentStatus::DELETED;
-        return $this->save(false, ['status', 'updatedBy', 'updatedAt']);
+        return $this->save(false, ['status', 'updated_by', 'updated_at']);
     }
 
     /**
@@ -261,7 +257,7 @@ class CommentModel extends ActiveRecord
      */
     public function getPostedDate()
     {
-        return Yii::$app->formatter->asRelativeTime($this->createdAt);
+        return Yii::$app->formatter->asRelativeTime($this->created_at);
     }
 
     /**
@@ -278,8 +274,11 @@ class CommentModel extends ActiveRecord
      * @param string $deletedCommentText
      * @return string
      */
-    public function getContent($deletedCommentText = 'Comment was deleted.')
+    public function getContent($deletedCommentText = null)
     {
+        if ($deletedCommentText === null) {
+            $deletedCommentText = Yii::t('yii2mod.comments', 'Comment was deleted.');
+        }
         return $this->isDeleted ? $deletedCommentText : Yii::$app->formatter->asNtext($this->content);
     }
 
@@ -291,16 +290,16 @@ class CommentModel extends ActiveRecord
     public function getAvatar($imgOptions = [])
     {
         $imgOptions = ArrayHelper::merge($imgOptions, ['class' => 'img-responsive']);
-        return Html::img("http://gravatar.com/avatar/{$this->author->id}/?s=50", $imgOptions);
+        return Html::img("http://gravatar.com/avatar/{$this->author->id}/?s=48", $imgOptions);
     }
 
 
     /**
-     * This function used for filter in gridView, for attribute `createdBy`.
+     * This function used for filter in gridView, for attribute `created_by`.
      * @return array
      */
     public static function getListAuthorsNames()
     {
-        return ArrayHelper::map(self::find()->joinWith('author')->all(), 'createdBy', 'author.username');
+        return ArrayHelper::map(self::find()->joinWith('author')->all(), 'created_by', 'author.username');
     }
 }

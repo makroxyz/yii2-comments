@@ -29,7 +29,7 @@ class Comment extends Widget
     /**
      * @var string the view file that will render the comment tree and form for posting comments.
      */
-    public $commentView = '@vendor/yii2mod/yii2-comments/widgets/views/index';
+//    public $commentView = '@vendor/yii2mod/yii2-comments/widgets/views/index';
 
     /**
      * @var string comment form id
@@ -90,8 +90,8 @@ class Comment extends Widget
         }
         $this->encryptedEntityKey = Yii::$app->getSecurity()->encryptByKey(Json::encode([
             'entity' => $this->entity,
-            'entityId' => $this->entityId,
-            'relatedTo' => $this->relatedTo
+            'entity_id' => $this->entityId,
+            'related_to' => $this->relatedTo
         ]), Module::$name);
         $this->registerAssets();
     }
@@ -107,14 +107,15 @@ class Comment extends Widget
         $commentModelClass = $module->commentModelClass;
         $commentModel = Yii::createObject($commentModelClass);
         $comments = $commentModelClass::getTree($this->entity, $this->entityId, $this->maxLevel);
-
-        return $this->render($this->commentView, [
+        return $this->render('index', [
             'comments' => $comments,
             'commentModel' => $commentModel,
             'maxLevel' => $this->maxLevel,
             'encryptedEntity' => $this->encryptedEntityKey,
             'pjaxContainerId' => $this->pjaxContainerId,
-            'formId' => $this->formId
+            'formId' => $this->formId,
+            'createRoute' => "/$module->id/default/create",
+            'deleteRoute' => "/$module->id/default/delete",
         ]);
     }
 
@@ -125,6 +126,7 @@ class Comment extends Widget
     {
         $this->clientOptions['pjaxContainerId'] = '#' . $this->pjaxContainerId;
         $this->clientOptions['formSelector'] = '#' . $this->formId;
+        $this->clientOptions['submitButtonLabel'] = Yii::t('yii2mod.comments', 'Submit');
         $options = Json::encode($this->clientOptions);
         $view = $this->getView();
         CommentAsset::register($view);

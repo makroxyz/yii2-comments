@@ -22,12 +22,12 @@ class ManageController extends Controller
     /**
      * @var string path to index view file, which is used in admin panel
      */
-    public $indexView = '@vendor/yii2mod/yii2-comments/views/manage/index';
+//    public $indexView = '@vendor/yii2mod/yii2-comments/views/manage/index';
 
     /**
      * @var string path to update view file, which is used in admin panel
      */
-    public $updateView = '@vendor/yii2mod/yii2-comments/views/manage/update';
+//    public $updateView = '@vendor/yii2mod/yii2-comments/views/manage/update';
 
     /**
      * Behaviors
@@ -72,7 +72,7 @@ class ManageController extends Controller
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         $commentModel = Yii::$app->getModule(Module::$name)->commentModelClass;
 
-        return $this->render($this->indexView, [
+        return $this->render('index', [
             'dataProvider' => $dataProvider,
             'searchModel' => $searchModel,
             'commentModel' => $commentModel
@@ -94,7 +94,7 @@ class ManageController extends Controller
             return $this->redirect(['index']);
         }
 
-        return $this->render($this->updateView, [
+        return $this->render('update', [
             'model' => $model,
         ]);
 

@@ -17,18 +17,16 @@ use yii\widgets\Pjax;
 ]); ?>
 <div class="comments row">
     <div class="col-md-12 col-sm-12">
-        <div class="title-block clearfix">
-            <h3 class="h3-body-title"><?php echo Yii::t('yii2mod.comments', 'Comments'); ?></h3>
-            <div class="title-separator"></div>
-        </div>
-        <ol class="comments-list">
-            <?php echo $this->render('_list', ['comments' => $comments, 'maxLevel' => $maxLevel]) ?>
+        <ol class="comments-list list-unstyled">
+            <?php echo $this->render('_list', ['comments' => $comments, 'maxLevel' => $maxLevel, 'deleteRoute' => $deleteRoute]) ?>
         </ol>
         <?php if (!Yii::$app->user->isGuest): ?>
+            <div class="clearfix"></div>
             <?php echo $this->render('_form', [
                 'commentModel' => $commentModel,
                 'encryptedEntity' => $encryptedEntity,
-                'formId' => $formId
+                'formId' => $formId,
+                'createRoute' => $createRoute
             ]); ?>
         <?php endif; ?>
     </div>

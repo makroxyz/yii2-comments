@@ -18,23 +18,23 @@ class m010101_100001_init_comment extends Migration
             $tableOptions = 'CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE=InnoDB';
         }
 
-        $this->createTable('{{%Comment}}', [
-            'id' => Schema::TYPE_PK,
-            'entity' => 'CHAR(10) NOT NULL',
-            'entityId' => Schema::TYPE_INTEGER . ' NOT NULL',
-            'content' => Schema::TYPE_TEXT . ' NOT NULL',
-            'parentId' => Schema::TYPE_INTEGER . ' DEFAULT NULL',
-            'level' => 'TINYINT(3) NOT NULL DEFAULT 1',
-            'createdBy' => Schema::TYPE_INTEGER . ' NOT NULL',
-            'updatedBy' => Schema::TYPE_INTEGER . ' NOT NULL',
-            'relatedTo' => $this->string(500)->notNull(),
-            'status' => 'TINYINT(2) NOT NULL DEFAULT 1',
-            'createdAt' => Schema::TYPE_INTEGER . ' NOT NULL',
-            'updatedAt' => Schema::TYPE_INTEGER . ' NOT NULL',
+        $this->createTable('{{%comment}}', [
+            'id' => $this->primaryKey(),
+            'entity' => $this->string(10)->notNull(),
+            'entity_id' => $this->integer()->notNull(),
+            'content' => $this->text()->notNull(),
+            'parent_id' => $this->integer()->defaultExpression('NULL'),
+            'level' => $this->smallInteger()->notNull()->defaultValue(1),
+            'created_by' => $this->integer()->notNull(),
+            'updated_by' => $this->integer()->notNull(),
+            'related_to' => $this->string(500)->notNull(),
+            'status' => $this->smallInteger()->notNull()->defaultValue(1),
+            'created_at' => $this->integer()->notNull(),
+            'updated_at' => $this->integer()->notNull(),
         ], $tableOptions);
 
-        $this->createIndex('entity_index', '{{%Comment}}', 'entity');
-        $this->createIndex('status_index', '{{%Comment}}', 'status');
+        $this->createIndex('entity_index', '{{%comment}}', 'entity');
+        $this->createIndex('status_index', '{{%comment}}', 'status');
     }
 
     /**
@@ -42,7 +42,7 @@ class m010101_100001_init_comment extends Migration
      */
     public function down()
     {
-        $this->dropTable('{{%Comment}}');
+        $this->dropTable('{{%comment}}');
     }
 
 }
