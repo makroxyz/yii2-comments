@@ -50,7 +50,7 @@ class Comment extends Widget
      * @var array comment widget client options
      */
     public $clientOptions = [];
-
+    
     /**
      * @var string hash(crc32) from class name of the widget model
      */

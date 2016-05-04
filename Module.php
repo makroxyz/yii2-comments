@@ -28,13 +28,6 @@ class Module extends \yii\base\Module
     public $commentModelClass = null;
 
     /**
-     * @var string the namespace that controller classes are in.
-     * This namespace will be used to load controller classes by prepending it to the controller
-     * class name.
-     */
-    public $controllerNamespace = 'yii2mod\comments\controllers';
-
-    /**
      * Initializes the module.
      *
      * This method is called after the module is created and initialized with property values
@@ -50,6 +43,8 @@ class Module extends \yii\base\Module
         }
         if ($this->commentModelClass === null) {
             $this->commentModelClass = CommentModel::className();
+        } else {
+            \yii\di\Instance::ensure($this->commentModelClass, CommentModel::className());
         }
         parent::init();
     }

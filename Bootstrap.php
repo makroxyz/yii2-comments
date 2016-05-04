@@ -3,7 +3,6 @@
 namespace yii2mod\comments;
 
 use yii\base\BootstrapInterface;
-use yii\base\InvalidConfigException;
 
 class Bootstrap implements BootstrapInterface
 {
