@@ -30,12 +30,16 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'attribute' => 'content',
-                'contentOptions' => ['style' => 'max-width: 350px;'],
                 'value' => function ($model) {
-                    return StringHelper::truncate($model->content, 100);
+                    return StringHelper::truncate($model->content, 50);
                 }
             ],
-            'attribute' => 'related_to',
+            [
+                'attribute' => 'related_to',
+                'value' => function ($model) {
+                    return StringHelper::truncate($model->related_to, 50);
+                }
+            ],
             [
                 'attribute' => 'created_by',
                 'value' => function ($model) {
@@ -60,6 +64,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 },
                 'filter' => CommentStatus::listData(),
                 'filterInputOptions' => ['prompt' => Yii::t('yii2mod.comments', 'Select Status'), 'class' => 'form-control'],
+                'contentOptions' => ['class' => 'col-xs-2']
             ],
             [
                 'attribute' => 'created_at',

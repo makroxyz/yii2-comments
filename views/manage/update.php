@@ -2,7 +2,7 @@
 
 use yii\helpers\Html;
 use yii\imperavi\Widget;
-use yii\widgets\ActiveForm;
+use yii\bootstrap\ActiveForm;
 use yii2mod\comments\models\enums\CommentStatus;
 
 /* @var $this yii\web\View */
@@ -19,6 +19,16 @@ $this->params['breadcrumbs'][] = Yii::t('yii2mod.comments', 'Update');
 
     <div class="comment-form">
         <?php $form = ActiveForm::begin(); ?>
+        
+        <div class="row">
+            <div class="col-md-8">
+                <?php echo $form->field($model, 'related_to')->staticControl(); ?>    
+            </div>
+            <div class="col-md-4">
+                <?php echo $form->field($model, 'status')->dropDownList(CommentStatus::listData()); ?>
+            </div>
+        </div>
+        
         <?php echo $form->field($model, 'content')->widget(Widget::className(), [
             'options' => [
                 'minHeight' => 300,
@@ -28,7 +38,7 @@ $this->params['breadcrumbs'][] = Yii::t('yii2mod.comments', 'Update');
             'id' => 'content',
         ]);
         ?>
-        <?php echo $form->field($model, 'status')->dropDownList(CommentStatus::listData()); ?>
+        
         <div class="form-group">
             <?php echo Html::submitButton(Yii::t('yii2mod.comments', 'Update'), ['class' => 'btn btn-primary']) ?>
         </div>
