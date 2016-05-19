@@ -15,6 +15,7 @@ use yii2mod\comments\Module;
  */
 class Comment extends Widget
 {
+    public $module = 'comments';
     /**
      * @var \yii\db\ActiveRecord|null Widget model
      */
@@ -92,7 +93,7 @@ class Comment extends Widget
             'entity' => $this->entity,
             'entity_id' => $this->entityId,
             'related_to' => $this->relatedTo
-        ]), Module::$name);
+        ]), $this->module);
         $this->registerAssets();
     }
 
@@ -103,7 +104,7 @@ class Comment extends Widget
     public function run()
     {
         /* @var $module Module */
-        $module = Yii::$app->getModule(Module::$name);
+        $module = Yii::$app->getModule($this->module);
         $commentModelClass = $module->commentModelClass;
         $commentModel = Yii::createObject($commentModelClass);
         $comments = $commentModelClass::getTree($this->entity, $this->entityId, $this->maxLevel);

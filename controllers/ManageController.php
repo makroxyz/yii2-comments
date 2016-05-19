@@ -68,9 +68,10 @@ class ManageController extends Controller
      */
     public function actionIndex()
     {
+        $module = Module::getInstance();
         $searchModel = new CommentSearchModel();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        $commentModel = Yii::$app->getModule(Module::$name)->commentModelClass;
+        $commentModel = $module->commentModelClass;
 
         return $this->render('index', [
             'dataProvider' => $dataProvider,

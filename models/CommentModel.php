@@ -147,8 +147,7 @@ class CommentModel extends ActiveRecord
      */
     public function getAuthor()
     {
-        $module = Yii::$app->getModule(Module::$name);
-        return $this->hasOne($module->userIdentityClass, ['id' => 'created_by']);
+        return $this->hasOne(Yii::$app->user->identityClass, ['id' => 'created_by']);
     }
 
     /**

@@ -12,14 +12,9 @@ use yii2mod\comments\models\CommentModel;
 class Module extends \yii\base\Module
 {
     /**
-     * @var string module name
-     */
-    public static $name = 'comments';
-
-    /**
      * @var string|null
      */
-    public $userIdentityClass = null;
+//    public $userIdentityClass = null;
 
     /**
      * @var string comment model class, by default its yii2mod\comments\models\CommentModel::className();
@@ -38,9 +33,9 @@ class Module extends \yii\base\Module
      */
     public function init()
     {
-        if ($this->userIdentityClass === null) {
-            $this->userIdentityClass = Yii::$app->getUser()->identityClass;
-        }
+//        if ($this->userIdentityClass === null) {
+//            $this->userIdentityClass = Yii::$app->getUser()->identityClass;
+//        }
         if ($this->commentModelClass === null) {
             $this->commentModelClass = CommentModel::className();
         } else {

@@ -97,7 +97,8 @@ class DefaultController extends Controller
     protected function findModel($id)
     {
         /** @var CommentModel $model */
-        $commentModelClass = Yii::$app->getModule(Module::$name)->commentModelClass;
+        $module = Module::getInstance();
+        $commentModelClass = $module->commentModelClass;
         if (($model = $commentModelClass::findOne($id)) !== null) {
             return $model;
         } else {
