@@ -20,6 +20,10 @@ class Comment extends Widget
      * @var \yii\db\ActiveRecord|null Widget model
      */
     public $model;
+    /**
+     * @var boolean encode entity
+     */
+    public $encode = true;
 
     /**
      * @var string relatedTo custom text, for example: cms url: about-us, john comment about us page, etc.
@@ -81,7 +85,7 @@ class Comment extends Widget
             throw new InvalidConfigException(Yii::t('yii2mod.comments', 'The "model" property must be set.'));
         }
         $this->pjaxContainerId = 'comment-pjax-container-' . $this->getId();
-        $this->entity = hash('crc32', get_class($this->model));
+        $this->entity = $this->encode ? hash('crc32', get_class($this->model)) : get_class($this->model);
         $this->entityId = $this->model->{$this->entityIdAttribute};
         if (empty($this->entityId)) {
             throw new InvalidConfigException(Yii::t('yii2mod.comments', 'The "entityIdAttribute" value for widget model cannot be empty.'));
