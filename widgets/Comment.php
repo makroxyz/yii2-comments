@@ -3,11 +3,12 @@
 namespace yii2mod\comments\widgets;
 
 use Yii;
+use yii2mod\comments\CommentAsset;
+use yii2mod\comments\CommentBehavior;
+use yii2mod\comments\Module;
 use yii\base\InvalidConfigException;
 use yii\base\Widget;
 use yii\helpers\Json;
-use yii2mod\comments\CommentAsset;
-use yii2mod\comments\Module;
 
 /**
  * Class Comment
@@ -20,11 +21,6 @@ class Comment extends Widget
      * @var \yii\db\ActiveRecord|null Widget model
      */
     public $model;
-    /**
-     * @var boolean encode entity
-     */
-    public $encode = true;
-
     /**
      * @var string relatedTo custom text, for example: cms url: about-us, john comment about us page, etc.
      * By default - className:primaryKey of the current model
@@ -75,6 +71,10 @@ class Comment extends Widget
      * @var string pjax container id, generated automatically
      */
     protected $pjaxContainerId;
+    /**
+     * @var behavior 
+     */
+    private $_behavior;
 
     /**
      * Initializes the widget params.
@@ -84,9 +84,21 @@ class Comment extends Widget
         if (empty($this->model)) {
             throw new InvalidConfigException(Yii::t('yii2mod.comments', 'The "model" property must be set.'));
         }
+        
+        $model = $this->model;
+        foreach ($model->getBehaviors() as $behavior) {
+            if ($behavior instanceof CommentBehavior) {
+                $this->_behavior = $behavior;
+                break;
+            }
+        }
+        if ($this->_behavior === null) {
+            throw new InvalidConfigException($model::className() . ' must have ' . CommentBehavior::className());
+        }
+        
         $this->pjaxContainerId = 'comment-pjax-container-' . $this->getId();
-        $this->entity = $this->encode ? hash('crc32', get_class($this->model)) : get_class($this->model);
-        $this->entityId = $this->model->{$this->entityIdAttribute};
+        $this->entity = $this->_behavior->entity;
+        $this->entityId = $model->{$this->_behavior->entityIdAttribute};
         if (empty($this->entityId)) {
             throw new InvalidConfigException(Yii::t('yii2mod.comments', 'The "entityIdAttribute" value for widget model cannot be empty.'));
         }
