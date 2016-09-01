@@ -16,6 +16,7 @@
 
     // Default settings
     var defaults = {
+        containerId: '#comment-widget',
         // Comment submit button label
         submitButtonLabel: 'Submit',
         // Comment actions buttons selector
@@ -34,6 +35,7 @@
         pjaxSettings: {
             timeout: 10000,
             scrollTo: false,
+            push: false,
             url: window.location.href
         }
     };
@@ -41,12 +43,12 @@
     // Methods
     var methods = {
         init: function (options) {
+            var settings = $.extend({}, defaults, options || {});
             return this.each(function () {
-                var $commentForm = $(this);
+                var $commentForm = $(settings.formSelector);
                 if ($commentForm.data('comment')) {
                     return;
                 }
-                var settings = $.extend({}, defaults, options || {});
                 $commentForm.data('comment', settings);
                 //Add events
                 $commentForm.on('beforeSubmit.comment', beforeSubmitForm);
@@ -87,6 +89,7 @@
                     $commentForm.trigger("reset");
                     //Restart plugin
                     methods.reset.call($commentForm, settings);
+                    $(settings.containerId).trigger('comment.deleted');
                 });
             }
             //If status is error, then only show form errors.
@@ -155,6 +158,7 @@
             success: function (result, status, xhr) {
                 $this.parents('[data-comment-content-id="' + $this.data('comment-id') + '"]').find(settings.contentSelector).text(result);
                 $this.parents(settings.toolsSelector).remove();
+                $(settings.containerId).trigger('comment.deleted');
             }
         });
     }

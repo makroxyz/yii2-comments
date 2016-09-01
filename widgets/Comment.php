@@ -8,6 +8,7 @@ use yii2mod\comments\CommentBehavior;
 use yii2mod\comments\Module;
 use yii\base\InvalidConfigException;
 use yii\base\Widget;
+use yii\helpers\Html;
 use yii\helpers\Json;
 
 /**
@@ -22,6 +23,10 @@ class Comment extends Widget
      */
     public $model;
     /**
+     * @var array
+     */
+    public $options = [];
+    /**
      * @var string relatedTo custom text, for example: cms url: about-us, john comment about us page, etc.
      * By default - className:primaryKey of the current model
      */
@@ -35,7 +40,7 @@ class Comment extends Widget
     /**
      * @var string comment form id
      */
-    public $formId = 'comment-form';
+//    public $formId = 'comment-form';
 
     /**
      * @var null|integer maximum comments level, level starts from 1, null - unlimited level;
@@ -51,6 +56,10 @@ class Comment extends Widget
      * @var array comment widget client options
      */
     public $clientOptions = [];
+    /**
+     * @var array comment widget client events
+     */
+    public $clientEvents = [];
     
     /**
      * @var string hash(crc32) from class name of the widget model
@@ -66,11 +75,13 @@ class Comment extends Widget
      * @var string encrypted entity key from params: entity, entityId, relatedTo
      */
     protected $encryptedEntityKey;
+    
+    protected $formId;
 
     /**
      * @var string pjax container id, generated automatically
      */
-    protected $pjaxContainerId;
+    public $pjaxContainerId;
     /**
      * @var behavior 
      */
@@ -96,7 +107,17 @@ class Comment extends Widget
             throw new InvalidConfigException($model::className() . ' must have ' . CommentBehavior::className());
         }
         
-        $this->pjaxContainerId = 'comment-pjax-container-' . $this->getId();
+//        $this->pjaxContainerId = 'comment-pjax-container-' . $this->getId();
+        
+        if (!isset($this->options['id'])) {
+            $this->options['id'] = $this->getId();
+        }
+        
+        $this->formId = $this->id . '-form';
+        
+        if ($this->pjaxContainerId == '') {
+            $this->pjaxContainerId = $this->getId() . '-pjax';
+        }
         $this->entity = $this->_behavior->entity;
         $this->entityId = $model->{$this->_behavior->entityIdAttribute};
         if (empty($this->entityId)) {
@@ -111,6 +132,7 @@ class Comment extends Widget
             'related_to' => $this->relatedTo
         ]), $this->module);
         $this->registerAssets();
+        echo Html::beginTag('div', $this->options);
     }
 
     /**
@@ -124,7 +146,7 @@ class Comment extends Widget
         $commentModelClass = $module->commentModelClass;
         $commentModel = Yii::createObject($commentModelClass);
         $comments = $commentModelClass::getTree($this->entity, $this->entityId, $this->maxLevel);
-        return $this->render('index', [
+        echo $this->render('index', [
             'comments' => $comments,
             'commentModel' => $commentModel,
             'maxLevel' => $this->maxLevel,
@@ -134,6 +156,7 @@ class Comment extends Widget
             'createRoute' => "/$module->id/default/create",
             'deleteRoute' => "/$module->id/default/delete",
         ]);
+        echo Html::endTag('div');
     }
 
     /**
@@ -141,13 +164,28 @@ class Comment extends Widget
      */
     protected function registerAssets()
     {
+        $this->clientOptions['containerId'] = '#' . $this->id;
         $this->clientOptions['pjaxContainerId'] = '#' . $this->pjaxContainerId;
         $this->clientOptions['formSelector'] = '#' . $this->formId;
         $this->clientOptions['submitButtonLabel'] = Yii::t('yii2mod.comments', 'Submit');
         $options = Json::encode($this->clientOptions);
         $view = $this->getView();
         CommentAsset::register($view);
-        $view->registerJs("jQuery('#$this->formId').comment($options);");
+        $view->registerJs("jQuery('#{$this->id}').comment($options);");
+        $this->registerClientEvents();
+    }
+    
+    protected function registerClientEvents()
+    {
+        if (!empty($this->clientEvents)) {
+//            $id = $this->options['id'];
+            $js = [];
+            foreach ($this->clientEvents as $event => $handler) {
+//                $js[] = "jQuery(document).on('$event', '#{$this->id}', $handler);";
+                $js[] = "jQuery('#{$this->id}').on('$event', $handler);";
+            }
+            $this->getView()->registerJs(implode("\n", $js));
+        }
     }
 
 }
