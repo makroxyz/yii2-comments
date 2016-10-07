@@ -19,17 +19,18 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="comments-index">
 
     <h1><?php echo Html::encode($this->title) ?></h1>
-    <?php Pjax::begin(['enablePushState' => false, 'timeout' => 5000]); ?>
+    <?php Pjax::begin(['timeout' => 5000]); ?>
     <?php echo GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
             [
                 'attribute' => 'id',
-                'contentOptions' => ['style' => 'max-width: 50px;']
+                'contentOptions' => ['style' => 'width: 80px;']
             ],
             [
                 'attribute' => 'content',
+                'contentOptions' => ['style' => 'max-width: 350px;'],
                 'value' => function ($model) {
                     return StringHelper::truncate($model->content, 50);
                 }
@@ -45,8 +46,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value' => function ($model) {
                     return $model->getAuthorName();
                 },
-                'filter' => $commentModel::getListAuthorsNames(),
-                'filterInputOptions' => ['prompt' => Yii::t('yii2mod.comments', 'Select Author'), 'class' => 'form-control'],
+//                'filter' => $commentModel::getListAuthorsNames(),
+//                'filterInputOptions' => ['prompt' => Yii::t('yii2mod.comments', 'Select Author'), 'class' => 'form-control'],
             ],
             [
                 'class' => EditableColumn::className(),
@@ -64,7 +65,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 },
                 'filter' => CommentStatus::listData(),
                 'filterInputOptions' => ['prompt' => Yii::t('yii2mod.comments', 'Select Status'), 'class' => 'form-control'],
-                'contentOptions' => ['class' => 'col-xs-2']
+//                'contentOptions' => ['class' => 'col-xs-2']
             ],
             [
                 'attribute' => 'created_at',
@@ -72,11 +73,13 @@ $this->params['breadcrumbs'][] = $this->title;
                     return Yii::$app->formatter->asDatetime($model->created_at);
                 },
                 'filter' => false,
+                'contentOptions' => ['class' => 'col-xs-1']
             ],
             [
                 'header' => 'Actions',
                 'class' => 'yii\grid\ActionColumn',
-                'template' => '{update}{delete}',
+                'template' => '{update} {delete}',
+                'contentOptions' => ['style' => 'width: 60px;']
             ]
         ],
     ]);

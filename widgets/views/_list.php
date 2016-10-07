@@ -26,13 +26,15 @@ use yii\helpers\Url;
                             <?php endif; ?>
                         </div>
                     <?php endif; ?>
-                    <div class="comment-author-name">
-                        <strong><?php echo $comment->getAuthorName(); ?></strong>
+                    <?php echo Html::tag('meta', null, ['content' => Yii::$app->formatter->asDatetime($comment->created_at, 'php:c'), 'itemprop' => 'dateCreated']); ?>
+                    <?php echo Html::tag('meta', null, ['content' => Yii::$app->formatter->asDatetime($comment->updated_at, 'php:c'), 'itemprop' => 'dateModified']); ?>
+                    <div class="comment-author-name" itemprop="creator" itemscope itemtype="http://schema.org/Person">
+                        <span itemprop="name"><?php echo $comment->getAuthorName(); ?></span>
                         <span class="comment-date text-muted">
-                            <em><?php echo $comment->getPostedDate(); ?></em>
+                            <?php echo $comment->getPostedDate(); ?>
                         </span>
                     </div>
-                    <div class="comment-body">
+                    <div class="comment-body" itemprop="text">
                         <?php echo $comment->getContent(); ?>
                     </div>
                     <div class="clearfix"></div>

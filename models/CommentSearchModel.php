@@ -3,7 +3,6 @@
 namespace yii2mod\comments\models;
 
 use yii\data\ActiveDataProvider;
-use yii\helpers\ArrayHelper;
 
 /**
  * Class CommentSearchModel
@@ -11,26 +10,28 @@ use yii\helpers\ArrayHelper;
  */
 class CommentSearchModel extends CommentModel
 {
+    public $username;
+    
     /**
-     * Returns the validation rules for attributes.
      * @return array validation rules
      */
     public function rules()
     {
-        return ArrayHelper::merge([
-            [['id', 'created_by', 'content', 'status', 'related_to'], 'safe'],
-        ], parent::rules());
+        return [
+            [['id', 'createdBy', 'content', 'status', 'relatedTo', 'username'], 'safe'],
+        ];
     }
 
     /**
-     * Setup search function for filtering and sorting based on fullName field
+     * Setup search function for filtering and sorting.
+     *
      * @param $params
      * @param int $pageSize
      * @return ActiveDataProvider
      */
     public function search($params, $pageSize = 20)
     {
-        $query = self::find();
+        $query = self::find()->innerJoinWith('author');
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination' => [
@@ -51,6 +52,7 @@ class CommentSearchModel extends CommentModel
         $query->andFilterWhere(['id' => $this->id]);
         $query->andFilterWhere(['created_by' => $this->created_by]);
         $query->andFilterWhere(['status' => $this->status]);
+        $query->andFilterWhere(['like', 'LOWER(username)', strtolower($this->username)]);
         $query->andFilterWhere(['like', 'content', $this->content]);
         $query->andFilterWhere(['like', 'related_to', $this->related_to]);
 

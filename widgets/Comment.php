@@ -3,17 +3,17 @@
 namespace yii2mod\comments\widgets;
 
 use Yii;
-use yii2mod\comments\CommentAsset;
 use yii2mod\comments\CommentBehavior;
-use yii2mod\comments\Module;
 use yii\base\InvalidConfigException;
 use yii\base\Widget;
 use yii\helpers\Html;
 use yii\helpers\Json;
+use yii2mod\comments\CommentAsset;
+use yii2mod\comments\Module;
 
 /**
  * Class Comment
- * @package app\components\comment\widgets
+ * @package yii2mod\comments\widgets
  */
 class Comment extends Widget
 {
@@ -35,7 +35,7 @@ class Comment extends Widget
     /**
      * @var string the view file that will render the comment tree and form for posting comments.
      */
-//    public $commentView = '@vendor/yii2mod/yii2-comments/widgets/views/index';
+    public $commentView = '@vendor/yii2mod/yii2-comments/widgets/views/index';
 
     /**
      * @var string comment form id
@@ -46,6 +46,11 @@ class Comment extends Widget
      * @var null|integer maximum comments level, level starts from 1, null - unlimited level;
      */
     public $maxLevel = 7;
+
+    /**
+     * @var boolean show deleted comments. Defaults to `false`.
+     */
+    public $showDeletedComments = false;
 
     /**
      * @var string entity id attribute
@@ -123,15 +128,15 @@ class Comment extends Widget
         if (empty($this->entityId)) {
             throw new InvalidConfigException(Yii::t('yii2mod.comments', 'The "entityIdAttribute" value for widget model cannot be empty.'));
         }
+
         if (empty($this->relatedTo)) {
             $this->relatedTo = get_class($this->model) . ':' . $this->entityId;
         }
-        $this->encryptedEntityKey = Yii::$app->getSecurity()->encryptByKey(Json::encode([
-            'entity' => $this->entity,
-            'entity_id' => $this->entityId,
-            'related_to' => $this->relatedTo
-        ]), $this->module);
+
+        $this->encryptedEntityKey = $this->generateEntityKey();
+
         $this->registerAssets();
+
         echo Html::beginTag('div', $this->options);
     }
 
@@ -144,15 +149,20 @@ class Comment extends Widget
         /* @var $module Module */
         $module = Yii::$app->getModule($this->module);
         $commentModelClass = $module->commentModelClass;
-        $commentModel = Yii::createObject($commentModelClass);
-        $comments = $commentModelClass::getTree($this->entity, $this->entityId, $this->maxLevel);
-        echo $this->render('index', [
+        $commentModel = Yii::createObject([
+            'class' => $commentModelClass,
+            'entity' => $this->entity,
+            'entity_id' => $this->entityId
+        ]);
+        $comments = $commentModelClass::getTree($this->entity, $this->entityId, $this->maxLevel, $this->showDeletedComments);
+        echo $this->render($this->commentView, [
             'comments' => $comments,
             'commentModel' => $commentModel,
             'maxLevel' => $this->maxLevel,
             'encryptedEntity' => $this->encryptedEntityKey,
             'pjaxContainerId' => $this->pjaxContainerId,
             'formId' => $this->formId,
+			'showDeletedComments' => $this->showDeletedComments,
             'createRoute' => "/$module->id/default/create",
             'deleteRoute' => "/$module->id/default/delete",
         ]);
@@ -175,6 +185,9 @@ class Comment extends Widget
         $this->registerClientEvents();
     }
     
+	/**
+     * Register client events.
+     */
     protected function registerClientEvents()
     {
         if (!empty($this->clientEvents)) {
@@ -188,4 +201,23 @@ class Comment extends Widget
         }
     }
 
+	 /**
+     * Get encrypted entity key
+     *
+     * @return string
+     */
+    protected function generateEntityKey()
+    {
+        /*return utf8_encode(Yii::$app->getSecurity()->encryptByKey(Json::encode([
+            'entity' => $this->entity,
+            'entityId' => $this->entityId,
+            'relatedTo' => $this->relatedTo
+        ]), Module::$name));*/
+
+		return Yii::$app->getSecurity()->encryptByKey(Json::encode([
+            'entity' => $this->entity,
+            'entity_id' => $this->entityId,
+            'related_to' => $this->relatedTo
+        ]), $this->module);
+    }
 }

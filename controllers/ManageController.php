@@ -40,6 +40,7 @@ class ManageController extends Controller
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'index' => ['get'],
+                    'update' => ['get', 'post'],
                     'delete' => ['post'],
                 ],
             ],
@@ -48,7 +49,7 @@ class ManageController extends Controller
 
     /**
      * Declares external actions for the controller.
-     * This method is meant to be overwritten to declare external actions for the controller.
+     *
      * @return array
      */
     public function actions()
@@ -82,7 +83,9 @@ class ManageController extends Controller
 
     /**
      * Updates an existing CommentModel model.
+     *
      * If update is successful, the browser will be redirected to the 'view' page.
+     *
      * @param integer $id
      * @return mixed
      */
@@ -103,7 +106,9 @@ class ManageController extends Controller
 
     /**
      * Deletes an existing CommentModel model.
+     *
      * If deletion is successful, the browser will be redirected to the 'index' page.
+     *
      * @param integer $id
      * @return mixed
      */
@@ -116,9 +121,12 @@ class ManageController extends Controller
 
     /**
      * Finds the CommentModel model based on its primary key value.
+     *
      * If the model is not found, a 404 HTTP exception will be thrown.
+     *
      * @param integer $id
      * @return CommentModel the loaded model
+     *
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
