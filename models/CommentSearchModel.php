@@ -53,8 +53,8 @@ class CommentSearchModel extends CommentModel
         $query->andFilterWhere([self::tableName() . '.created_by' => $this->created_by]);
         $query->andFilterWhere([self::tableName() . '.status' => $this->status]);
         $query->andFilterWhere(['like', 'LOWER(username)', strtolower($this->username)]);
-        $query->andFilterWhere([self::tableName() . '.like', 'LOWER(content)', strtolower($this->content)]);
-        $query->andFilterWhere([self::tableName() . '.like', 'related_to', $this->related_to]);
+        $query->andFilterWhere(['like', 'LOWER(content)', strtolower($this->content)]);
+        $query->andFilterWhere(['like', 'related_to', $this->related_to]);
 
         return $dataProvider;
     }
