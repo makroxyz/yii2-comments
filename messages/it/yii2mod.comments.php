@@ -48,5 +48,6 @@ return [
     'Update Comment: {0}' => 'Modifica Commento: {0}',
     'Active' => 'Attivo',
     'Deleted' => 'Eliminato',
-    'Go Back' => 'Indietro'
+    'Go Back' => 'Indietro',
+    'Submit' => 'Invia'
 ];
