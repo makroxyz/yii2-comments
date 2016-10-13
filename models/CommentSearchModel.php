@@ -49,12 +49,12 @@ class CommentSearchModel extends CommentModel
         }
 
         //adjust the query by adding the filters
-        $query->andFilterWhere(['id' => $this->id]);
-        $query->andFilterWhere(['created_by' => $this->created_by]);
-        $query->andFilterWhere(['status' => $this->status]);
+        $query->andFilterWhere([self::tableName() . '.id' => $this->id]);
+        $query->andFilterWhere([self::tableName() . '.created_by' => $this->created_by]);
+        $query->andFilterWhere([self::tableName() . '.status' => $this->status]);
         $query->andFilterWhere(['like', 'LOWER(username)', strtolower($this->username)]);
-        $query->andFilterWhere(['like', 'content', $this->content]);
-        $query->andFilterWhere(['like', 'related_to', $this->related_to]);
+        $query->andFilterWhere([self::tableName() . '.like', 'LOWER(content)', strtolower($this->content)]);
+        $query->andFilterWhere([self::tableName() . '.like', 'related_to', $this->related_to]);
 
         return $dataProvider;
     }

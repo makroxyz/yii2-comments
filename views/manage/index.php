@@ -42,7 +42,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
             ],
             [
-                'attribute' => 'created_by',
+                'header' => $searchModel->getAttributeLabel('author'),
+                'attribute' => 'username',
                 'value' => function ($model) {
                     return $model->getAuthorName();
                 },
