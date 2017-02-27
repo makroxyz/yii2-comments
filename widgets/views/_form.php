@@ -15,7 +15,7 @@ use yii\widgets\ActiveForm;
             'id' => $formId,
             'class' => 'comment-box'
         ],
-        'action' => Url::to([$createRoute, 'entity' => $encryptedEntity]),
+        'action' => Url::to([$createRoute, 'entity' => urlencode($encryptedEntity)]),
         'validateOnChange' => false,
         'validateOnBlur' => false
     ]); ?>
