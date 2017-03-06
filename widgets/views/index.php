@@ -6,7 +6,9 @@ use yii\widgets\Pjax;
 /* @var $comments array */
 /* @var $commentModel \yii2mod\comments\models\CommentModel */
 /* @var $maxLevel null|integer comments max level */
-/* @var $encryptedEntity string */
+/* @var $entity string */
+/* @var $entityId integer */
+/* @var $relatedTo string */
 /* @var $pjaxContainerId string */
 /* @var $formId string comment form id */
 /* @var $showDeletedComments boolean show deleted comments. */
@@ -27,7 +29,9 @@ use yii\widgets\Pjax;
             <div class="clearfix"></div>
             <?php echo $this->render('_form', [
                 'commentModel' => $commentModel,
-                'encryptedEntity' => $encryptedEntity,
+                'entity' => $entity,
+                'entityId' => $entityId,
+                'relatedTo' => $relatedTo,
                 'formId' => $formId,
                 'createRoute' => $createRoute
             ]); ?>

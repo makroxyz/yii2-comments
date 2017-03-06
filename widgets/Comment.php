@@ -69,17 +69,17 @@ class Comment extends Widget
     /**
      * @var string hash(crc32) from class name of the widget model
      */
-    protected $entity;
+    public $entity;
 
     /**
      * @var integer primary key value of the widget model
      */
-    protected $entityId;
+    public $entityId;
 
     /**
      * @var string encrypted entity key from params: entity, entityId, relatedTo
      */
-    protected $encryptedEntityKey;
+//    protected $encryptedEntityKey;
     
     protected $formId;
 
@@ -133,7 +133,7 @@ class Comment extends Widget
             $this->relatedTo = get_class($this->model) . ':' . $this->entityId;
         }
 
-        $this->encryptedEntityKey = $this->generateEntityKey();
+//        $this->encryptedEntityKey = $this->generateEntityKey();
 
         $this->registerAssets();
 
@@ -159,7 +159,9 @@ class Comment extends Widget
             'comments' => $comments,
             'commentModel' => $commentModel,
             'maxLevel' => $this->maxLevel,
-            'encryptedEntity' => $this->encryptedEntityKey,
+            'entity' => $this->entity,
+            'entityId' => $this->entityId,
+            'relatedTo' => $this->relatedTo,
             'pjaxContainerId' => $this->pjaxContainerId,
             'formId' => $this->formId,
 			'showDeletedComments' => $this->showDeletedComments,
@@ -206,18 +208,18 @@ class Comment extends Widget
      *
      * @return string
      */
-    protected function generateEntityKey()
-    {
-        /*return utf8_encode(Yii::$app->getSecurity()->encryptByKey(Json::encode([
-            'entity' => $this->entity,
-            'entityId' => $this->entityId,
-            'relatedTo' => $this->relatedTo
-        ]), Module::$name));*/
-
-		return Yii::$app->getSecurity()->encryptByKey(Json::encode([
-            'entity' => $this->entity,
-            'entity_id' => $this->entityId,
-            'related_to' => $this->relatedTo
-        ]), $this->module);
-    }
+//    protected function generateEntityKey()
+//    {
+//        /*return utf8_encode(Yii::$app->getSecurity()->encryptByKey(Json::encode([
+//            'entity' => $this->entity,
+//            'entityId' => $this->entityId,
+//            'relatedTo' => $this->relatedTo
+//        ]), Module::$name));*/
+//
+//		return Yii::$app->getSecurity()->encryptByKey(Json::encode([
+//            'entity' => $this->entity,
+//            'entity_id' => $this->entityId,
+//            'related_to' => $this->relatedTo
+//        ]), $this->module);
+//    }
 }

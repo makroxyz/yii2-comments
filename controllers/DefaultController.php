@@ -41,32 +41,24 @@ class DefaultController extends Controller
      * @param $entity string encrypt entity
      * @return array|null|Response
      */
-    public function actionCreate($entity)
+    public function actionCreate($entity, $entityId, $relatedTo)
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
         /* @var $module Module */
 //        $module = Yii::$app->getModule(Module::$name);
         $module = Module::getInstance();
         $commentModelClass = $module->commentModelClass;
-//        $decryptEntity = Yii::$app->getSecurity()->decryptByKey($entity, $module::$name);
-        $decryptEntity = Yii::$app->getSecurity()->decryptByKey(urldecode($entity), $module->id);
-        if ($decryptEntity !== false) {
-            $entityData = Json::decode($decryptEntity);
-            /* @var $model CommentModel */
-            $model = new $commentModelClass;
-            $model->setAttributes($entityData);
-            if ($model->load(Yii::$app->request->post()) && $model->save()) {
-                return ['status' => 'success'];
-            } else {
-                return [
-                    'status' => 'error',
-                    'errors' => ActiveForm::validate($model)
-                ];
-            }
+        /* @var $model CommentModel */
+        $model = new $commentModelClass;
+        $model->entity = $entity;
+        $model->entity_id = $entityId;
+        $model->related_to = $relatedTo;
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return ['status' => 'success'];
         } else {
             return [
                 'status' => 'error',
-                'message' => Yii::t('yii2mod.comments', 'Oops, something went wrong. Please try again later.')
+                'errors' => ActiveForm::validate($model)
             ];
         }
     }

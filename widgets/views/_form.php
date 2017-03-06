@@ -6,7 +6,9 @@ use yii\widgets\ActiveForm;
 
 /* @var $this \yii\web\View */
 /* @var $commentModel \yii2mod\comments\models\CommentModel */
-/* @var $encryptedEntity string */
+/* @var $entity string */
+/* @var $entityId integer */
+/* @var $relatedTo string */
 /* @var $formId string comment form id */
 ?>
 <div class="comment-form-container">
@@ -15,7 +17,7 @@ use yii\widgets\ActiveForm;
             'id' => $formId,
             'class' => 'comment-box'
         ],
-        'action' => Url::to([$createRoute, 'entity' => urlencode($encryptedEntity)]),
+        'action' => Url::to([$createRoute, 'entity' => $entity, 'entityId' => $entityId, 'relatedTo' => $relatedTo]),
         'validateOnChange' => false,
         'validateOnBlur' => false
     ]); ?>
