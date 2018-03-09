@@ -88,6 +88,10 @@ class Comment extends Widget
      */
     public $pjaxContainerId;
     /**
+     * @var boolean readonly
+     */
+    public $readonly = false;
+    /**
      * @var behavior 
      */
     private $_behavior;
@@ -167,6 +171,7 @@ class Comment extends Widget
 			'showDeletedComments' => $this->showDeletedComments,
             'createRoute' => "/$module->id/default/create",
             'deleteRoute' => "/$module->id/default/delete",
+            'readonly' => $this->readonly,
         ]);
         echo Html::endTag('div');
     }

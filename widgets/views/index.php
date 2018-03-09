@@ -12,6 +12,7 @@ use yii\widgets\Pjax;
 /* @var $pjaxContainerId string */
 /* @var $formId string comment form id */
 /* @var $showDeletedComments boolean show deleted comments. */
+/* @var $readonly boolean */
 ?>
 <?php Pjax::begin(['enablePushState' => false, 'timeout' => 20000, 'id' => $pjaxContainerId]); ?>
 <div class="comments row">
@@ -23,9 +24,9 @@ use yii\widgets\Pjax;
             <div class="title-separator"></div>
         </div>
         <ol class="comments-list list-unstyled">
-            <?php echo $this->render('_list', ['comments' => $comments, 'maxLevel' => $maxLevel, 'deleteRoute' => $deleteRoute]) ?>
+            <?php echo $this->render('_list', ['comments' => $comments, 'maxLevel' => $maxLevel, 'deleteRoute' => $deleteRoute, 'readonly' => $readonly]) ?>
         </ol>
-        <?php if (!Yii::$app->user->isGuest): ?>
+        <?php if (!Yii::$app->user->isGuest && !$readonly): ?>
             <div class="clearfix"></div>
             <?php echo $this->render('_form', [
                 'commentModel' => $commentModel,

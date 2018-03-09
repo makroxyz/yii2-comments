@@ -21,7 +21,7 @@ use yii\helpers\Url;
                             <?php if (Yii::$app->getUser()->can('admin')): ?>
                                 <?php echo Html::a(Html::icon('trash') . " " . Yii::t('yii2mod.comments', 'Delete'), '#', ['class' => 'btn btn-danger btn-xs', 'data' => ['action' => 'delete', 'url' => Url::to([$deleteRoute, 'id' => $comment->id]), 'comment-id' => $comment->id]]); ?>
                             <?php endif; ?>
-                            <?php if (!Yii::$app->user->isGuest && ($comment->level < $maxLevel || is_null($maxLevel))): ?>
+                            <?php if (!Yii::$app->user->isGuest && !$readonly && ($comment->level < $maxLevel || is_null($maxLevel))): ?>
                                 <?php echo Html::a(Html::icon('share-alt') . " " . Yii::t('yii2mod.comments', 'Reply'), '#', ['class' => 'btn btn-primary btn-xs comment-reply', 'data' => ['action' => 'reply', 'comment-id' => $comment->id]]); ?>
                             <?php endif; ?>
                         </div>
