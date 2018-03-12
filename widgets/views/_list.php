@@ -42,7 +42,7 @@ use yii\helpers\Url;
             </div>
             <?php if ($comment->hasChildren()): ?>
                 <ul class="children list-unstyled">
-                    <?php echo $this->render('_list', ['comments' => $comment->children, 'maxLevel' => $maxLevel, 'deleteRoute' => $deleteRoute]) ?>
+                    <?php echo $this->render('_list', ['comments' => $comment->children, 'maxLevel' => $maxLevel, 'deleteRoute' => $deleteRoute, 'readonly' => $readonly]) ?>
                 </ul>
             <?php endif; ?>
         </li>
